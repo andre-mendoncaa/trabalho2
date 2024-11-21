@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
+
     <header>
         <img src="/images/logo.png" alt="Logo Retro Games" id="logo" onclick="window.location.href='/'">
         <h1>RetroWorld - Loja de Retro Games</h1>
@@ -15,7 +16,7 @@
     <main class="auth-container">
         <section class="login-form">
             <h2>Login</h2>
-            <form action="/login" method="POST">
+            <form id="login-form">
                 <label for="login-email">E-mail:</label>
                 <input type="email" id="login-email" name="email" required placeholder="Digite seu e-mail">
                 
@@ -24,13 +25,53 @@
                 
                 <button type="submit">Entrar</button>
             </form>
-            <p>Não tem uma conta? <a href="/signup">Cadastre-se aqui</a>.</p>
+            <p id="error-message" style="color: red; display: none;">Erro no login. Verifique suas credenciais.</p>
         </section>
     </main>
 
     <footer>
         <p>RetroWorld &copy; 2024 - Todos os direitos reservados</p>
     </footer>
+
+    <script>
+        // Lida com o envio do formulário
+        document.getElementById('login-form').addEventListener('submit', async function (e) {
+            e.preventDefault(); // Impede o envio tradicional do formulário
+
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            try {
+                // Faz a requisição para o backend
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Salva o email no localStorage
+                    localStorage.setItem('userEmail', result.email);
+
+                    // Redireciona para a página do catálogo
+                    window.location.href = result.redirectUrl;
+                } else {
+                    // Exibe a mensagem de erro
+                    const errorMessage = document.getElementById('error-message');
+                    errorMessage.textContent = result.message;
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Erro ao fazer login:', error);
+                document.getElementById('error-message').textContent = 'Erro no servidor. Tente novamente mais tarde.';
+                document.getElementById('error-message').style.display = 'block';
+            }
+        });
+    </script>
 
 </body>
 </html>
