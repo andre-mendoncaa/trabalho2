@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Catálogo de Retro World</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    #produtos-lista {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .produto-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .produto-item img {
+      max-width: 100px;
+      height: auto;
+      margin-right: 20px;
+    }
+
+
+  </style>
+</head>
+<body>
+  <header>
+    <div id="titulo" onclick="window.location.href='/'">
+      <img src="/images/logo.png" alt="Logo Retro Games" id="logo">
+      <h1>Retro World</h1>
+    </div>
+    <input id="search-bar" type="text" placeholder="Buscar jogos..." onkeyup="filtrarProdutos()">
+    <nav><a href="/carrinho">Carrinho</a></nav>
+  </header>
+
+  <main>
+    <h1>Catálogo de Jogos</h1>
+    <div class="produtos" id="produtos-lista">
+      <!-- Os produtos serão inseridos aqui dinamicamente -->
+    </div>
+  </main>
+
+  <footer>
+    <p>Endereço: Rua dos Games, 123 - CNPJ: 12.345.678/0001-99 - Telefone: (11) 98765-4321</p>
+  </footer>
+
+  <script>
+    let produtosData = []; // Armazenar os produtos carregados da API
+
+    // Função para carregar os produtos da API e exibir no catálogo
+    async function carregarProdutos() {
+      try {
+        const response = await fetch('/produtos/api'); // Consome a API de produtos
+        const produtos = await response.json(); // Converte a resposta para JSON
+
+        produtosData = produtos; // Armazena os produtos carregados
+
+        exibirProdutos(produtosData); // Exibe os produtos no início
+
+      } catch (error) {
+        console.error('Erro ao carregar produtos:', error);
+      }
+    }
+
+    // Função para exibir os produtos na tela
+    function exibirProdutos(produtos) {
+      const listaProdutos = document.getElementById('produtos-lista');
+      listaProdutos.innerHTML = ''; // Limpa a lista de produtos antes de adicionar os novos
+
+      if (produtos.length === 0) {
+        listaProdutos.innerHTML = '<p>Nenhum produto encontrado.</p>';
+      } else {
+        produtos.forEach(produto => {
+          // Cria um elemento HTML para cada produto
+          const produtoDiv = document.createElement('div');
+          produtoDiv.classList.add('produto-item');
+          produtoDiv.innerHTML = `
+            <img src="${produto.url_imagem}" alt="${produto.nome}">
+            <div>
+              <p>${produto.descricao}</p>
+              <p>R$ ${produto.preco.toFixed(2)}</p>
+              <button onclick="adicionarAoCarrinho('${produto.nome}', ${produto.preco}, '${produto.descricao}', '${produto.url_imagem}')">Comprar</button>
+            </div>
+          `;
+          
+          // Adiciona o produto à lista
+          listaProdutos.appendChild(produtoDiv);
+        });
+      }
+    }
+
+    // Função para adicionar item ao carrinho
+    function adicionarAoCarrinho(nome, preco, descricao, url_imagem) {
+      let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      let item = carrinho.find(item => item.descricao === descricao);
+      if (item) {
+        item.quantidade += 1; // Aumenta a quantidade caso o item já exista no carrinho
+      } else {
+        carrinho.push({ nome, preco, descricao, url_imagem, quantidade: 1 });
+      }
+      localStorage.setItem('carrinho', JSON.stringify(carrinho)); // Atualiza o carrinho no localStorage
+      alert('Item adicionado ao carrinho!');
+    }
+
+    // Função para filtrar os produtos com base na descrição
+    function filtrarProdutos() {
+      const searchQuery = document.getElementById('search-bar').value.toLowerCase(); // Pega o texto digitado na barra de pesquisa
+
+      // Filtra os produtos com base na descrição
+      const produtosFiltrados = produtosData.filter(produto => produto.descricao.toLowerCase().includes(searchQuery));
+
+      // Exibe os produtos filtrados
+      exibirProdutos(produtosFiltrados);
+    }
+
+    // Chama a função para carregar os produtos assim que a página for carregada
+    document.addEventListener('DOMContentLoaded', carregarProdutos);
+  </script>
+</body>
+</html>

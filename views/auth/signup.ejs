@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - RetroWorld</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <header>
+        <img src="/images/logo.png" alt="Logo Retro Games" id="logo" onclick="window.location.href='/'">
+        <h1>RetroWorld - Loja de Retro Games</h1>
+    </header>
+
+    <main class="auth-container">
+        <section id="signup-section" class="signup-form">
+            <h2>Cadastro</h2>
+            <form action="/signup" method="POST">
+                <label for="signup-name">Nome:</label>
+                <input type="text" id="signup-name" name="name" required placeholder="Digite seu nome completo">
+                
+                <label for="signup-email">E-mail:</label>
+                <input type="email" id="signup-email" name="email" required placeholder="Digite seu e-mail">
+                
+                <label for="signup-cpf">CPF:</label>
+                <input type="text" id="signup-cpf" name="cpf" required placeholder="Digite seu CPF">
+                
+                <label for="signup-password">Senha:</label>
+                <input type="password" id="signup-password" name="password" required placeholder="Digite uma senha">
+
+                <label for="signup-phone">Telefone:</label>
+                <input type="tel" id="signup-phone" name="phone" required placeholder="Digite seu telefone">
+                
+                <label for="signup-birthdate">Data de Nascimento (Opcional):</label>
+                <input type="date" id="signup-birthdate" name="birthdate">
+                
+                <label for="signup-cep">CEP:</label>
+                <input type="text" id="signup-cep" name="cep" required placeholder="Digite seu CEP">
+
+                <button type="submit">Cadastrar</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>RetroWorld &copy; 2024 - Todos os direitos reservados</p>
+    </footer>
+
+</body>
+</html>

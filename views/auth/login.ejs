@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - RetroWorld</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+    <header>
+        <img src="/images/logo.png" alt="Logo Retro Games" id="logo" onclick="window.location.href='/'">
+        <h1>RetroWorld - Loja de Retro Games</h1>
+    </header>
+    
+    <main class="auth-container">
+        <section class="login-form">
+            <h2>Login</h2>
+            <form action="/login" method="POST">
+                <label for="login-email">E-mail:</label>
+                <input type="email" id="login-email" name="email" required placeholder="Digite seu e-mail">
+                
+                <label for="login-password">Senha:</label>
+                <input type="password" id="login-password" name="password" required placeholder="Digite sua senha">
+                
+                <button type="submit">Entrar</button>
+            </form>
+            <p>Não tem uma conta? <a href="/signup">Cadastre-se aqui</a>.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>RetroWorld &copy; 2024 - Todos os direitos reservados</p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Carrinho de Compras</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    /* Estilo para o carrinho de compras */
+    #carrinho-produtos {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    .produto-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .produto-item img {
+      max-width: 100px;
+      height: auto;
+      margin-right: 20px;
+    }
+
+    .produto-item div {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .produto-item button, .produto-item input {
+      margin-top: 10px;
+    }
+
+    #carrinho-total {
+      margin-top: 30px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div id="titulo" onclick="window.location.href='/'">
+      <img src="/images/logo.png" alt="Logo Retro Games" id="logo">
+      <h1>Retro World</h1>
+    </div>
+    <nav>
+      <a href="/catalogo">Catálogo</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Seu Carrinho</h1>
+    <div id="carrinho-produtos"></div>
+    <div id="carrinho-total">
+      <span>Total: R$ <span id="total">0.00</span></span>
+      <button onclick="EfetuarPedido()">Finalizar Compra</button>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', atualizarCarrinho); // Atualiza o carrinho ao carregar a página
+
+    // Função para remover um item do carrinho
+    function removerDoCarrinho(index) {
+      let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      carrinho.splice(index, 1); // Remove o item do carrinho
+      localStorage.setItem('carrinho', JSON.stringify(carrinho)); // Atualiza o localStorage
+      atualizarCarrinho(); // Atualiza a exibição do carrinho
+    }
+
+    // Função para alterar a quantidade de um item
+    function alterarQuantidade(index, quantidade) {
+      let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      carrinho[index].quantidade = Math.max(1, parseInt(quantidade)); // Garante que a quantidade seja maior ou igual a 1
+      localStorage.setItem('carrinho', JSON.stringify(carrinho)); // Atualiza o localStorage
+      atualizarCarrinho(); // Atualiza a exibição do carrinho
+    }
+
+    // Função para finalizar o pedido e limpar o carrinho
+    function EfetuarPedido() {
+      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+      if (carrinho.length === 0) {
+        alert('O carrinho está vazio!');
+        return;
+      }
+
+      // Limpa o carrinho do localStorage
+      localStorage.removeItem('carrinho');
+      alert('Pedido Efetuado com sucesso!');
+
+      // Atualiza a exibição dos produtos no carrinho
+      atualizarCarrinho();
+    }
+
+    // Função para atualizar a exibição do carrinho na página
+    function atualizarCarrinho() {
+      const carrinhoProdutos = document.getElementById('carrinho-produtos');
+      const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
+
+      carrinhoProdutos.innerHTML = ''; // Limpa a exibição do carrinho
+
+      if (carrinho.length === 0) {
+        carrinhoProdutos.innerHTML = '<p>O carrinho está vazio.</p>';
+        document.getElementById('total').textContent = '0.00'; // Exibe o total como 0
+      } else {
+        let total = 0;
+        carrinho.forEach((item, index) => {
+          const produtoDiv = document.createElement('div');
+          produtoDiv.classList.add('produto-item');
+          produtoDiv.innerHTML = `
+            <img src="${item.url_imagem}" alt="${item.nome}">
+            <div>
+              <p>${item.descricao}</p>
+              <p>R$ ${item.preco.toFixed(2)} x ${item.quantidade}</p>
+              <button onclick="removerDoCarrinho(${index})">Remover</button>
+              <input type="number" value="${item.quantidade}" min="1" onchange="alterarQuantidade(${index}, this.value)">
+            </div>
+          `;
+          carrinhoProdutos.appendChild(produtoDiv);
+          total += item.preco * item.quantidade; // Calcula o total do carrinho
+        });
+
+        // Exibir o total
+        document.getElementById('total').textContent = total.toFixed(2);
+      }
+    }
+  </script>
+</body>
+</html>
