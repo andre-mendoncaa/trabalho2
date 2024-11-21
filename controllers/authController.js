@@ -6,9 +6,7 @@ exports.postLogin = async (req, res) => {
 
     // Validação dos campos
     if (!email || !password) {
-        return res.render('login', { 
-            alert: 'Email e senha são obrigatórios.' 
-        });
+        return res.status(400).json({ message: 'Email e senha são obrigatórios' });
     }
 
     try {
@@ -20,64 +18,51 @@ exports.postLogin = async (req, res) => {
             .single(); // Espera apenas um usuário
 
         if (error || !user) {
-            return res.render('login', { 
-                alert: 'Usuário não encontrado.' 
-            });
+            return res.status(400).json({ message: 'Usuário não encontrado' });
         }
 
         // Verificar se a senha fornecida bate com a senha armazenada
         if (password !== user.senha) { // Comparando as senhas em texto simples
-            return res.render('login', { 
-                alert: 'Senha incorreta.' 
-            });
+            return res.status(400).json({ message: 'Senha incorreta' });
         }
 
         // Login bem-sucedido
         res.redirect('/catalogo'); // Redirecionamento para a página do catálogo
     } catch (err) {
         console.error('Erro no servidor:', err);
-        return res.render('login', { 
-            alert: 'Erro no servidor' 
-        });
+        res.status(500).json({ message: 'Erro no servidor' });
     }
 };
 
-
-// Função de cadastro
 // Função de cadastro
 exports.postSignup = async (req, res) => {
     const { email, password } = req.body;
 
     // Validação dos campos
     if (!email || !password) {
-        return res.render('signup', { 
-            alert: 'Email e senha são obrigatórios.' 
-        });
+        return res.status(400).json({ message: 'Email e senha são obrigatórios' });
     }
 
     try {
         // Inserir o usuário na tabela 'usuarios' sem criptografar a senha
         const { data, error } = await supabase
             .from('usuarios')
-            .insert([{
-                email,
-                senha: password, // Armazenando a senha em texto simples
-            }]);
+            .insert([
+                {
+                    email,
+                    senha: password, // Armazenando a senha em texto simples
+                }
+            ]);
 
         if (error) {
             console.error('Erro ao inserir usuário:', error);
-            return res.render('signup', { 
-                alert: 'Erro ao cadastrar o usuário.' 
-            });
+            return res.status(500).json({ message: 'Erro ao cadastrar o usuário' });
         }
 
         // Cadastro bem-sucedido
         res.redirect('/login'); // Redireciona para a página de login após o cadastro
     } catch (err) {
         console.error('Erro no servidor ao criar usuário:', err);
-        return res.render('signup', { 
-            alert: 'Erro no servidor.' 
-        });
+        res.status(500).json({ message: 'Erro no servidor' });
     }
 };
-
