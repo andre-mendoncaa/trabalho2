@@ -27,11 +27,7 @@ exports.postLogin = async (req, res) => {
         }
 
         // Login bem-sucedido
-         res.json({
-            message: 'Login bem-sucedido',
-            email: user.email, // Inclui o email do usuário na resposta
-            redirectUrl: '/catalogo'
-        });
+        res.redirect('/catalogo'); // Redirecionamento para a página do catálogo
     } catch (err) {
         console.error('Erro no servidor:', err);
         res.status(500).json({ message: 'Erro no servidor' });
