@@ -33,3 +33,37 @@
     <footer>
         <p>RetroWorld &copy; 2024 - Todos os direitos reservados</p>
     </footer>
+    <script>
+        // Lida com o envio do formulário
+        document.getElementById('login-form').addEventListener('submit', async function (e) {
+            e.preventDefault(); // Impede o envio tradicional do formulário
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                // Faz a requisição para o backend
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    // Salva o email no localStorage
+                    localStorage.setItem('userEmail', result.email);
+                    // Redireciona para a página do catálogo
+                    window.location.href = result.redirectUrl;
+                } else {
+                    // Exibe a mensagem de erro
+                    const errorMessage = document.getElementById('error-message');
+                    errorMessage.textContent = result.message;
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Erro ao fazer login:', error);
+                document.getElementById('error-message').textContent = 'Erro no servidor. Tente novamente mais tarde.';
+                document.getElementById('error-message').style.display = 'block';
+            }
+        });
+    </script>
