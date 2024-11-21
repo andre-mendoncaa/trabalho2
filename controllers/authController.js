@@ -6,7 +6,7 @@ exports.postLogin = async (req, res) => {
 
     // Validação dos campos
     if (!email || !password) {
-        return res.status(400).json({ message: 'Email e senha são obrigatórios' });
+        alert('Email e senha são obrigatórios.');
     }
 
     try {
@@ -18,12 +18,12 @@ exports.postLogin = async (req, res) => {
             .single(); // Espera apenas um usuário
 
         if (error || !user) {
-            return res.status(400).json({ message: 'Usuário não encontrado' });
+            alert('Usuário não encontrado.');
         }
 
         // Verificar se a senha fornecida bate com a senha armazenada
         if (password !== user.senha) { // Comparando as senhas em texto simples
-            return res.status(400).json({ message: 'Senha incorreta' });
+            alert('Senha incorreta.');
         }
 
         // Login bem-sucedido
@@ -40,7 +40,7 @@ exports.postSignup = async (req, res) => {
 
     // Validação dos campos
     if (!email || !password) {
-        return res.status(400).json({ message: 'Email e senha são obrigatórios' });
+        alert('Email e senha são obrigatórios');
     }
 
     try {
