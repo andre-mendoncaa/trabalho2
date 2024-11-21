@@ -29,7 +29,6 @@ exports.postLogin = async (req, res) => {
         // Login bem-sucedido
         res.json({
             message: 'Login bem-sucedido',
-            email: user.email,
             email: user.email, // Inclui o email do usuário na resposta
             redirectUrl: '/catalogo'
         }); // Redirecionamento para a página do catálogo
